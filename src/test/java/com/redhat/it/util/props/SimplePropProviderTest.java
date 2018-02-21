@@ -22,6 +22,10 @@ public class SimplePropProviderTest {
 	@SimpleProp(key = "troll.question.name")
 	String trollNameAnswer;
 
+	@Inject
+	@SimpleProp(key = "average.airspeed.velocity.swallow.european")
+	String averageAirspeedVelocityEuropean;
+
 	@Test
 	public void shouldProvideSimpleProp() {
 		assertThat(operatingSystemName, equalTo(System.getProperty("os.name")));
@@ -30,5 +34,10 @@ public class SimplePropProviderTest {
 	@Test
 	public void shouldProvideClasspathProp() {
 		assertThat(trollNameAnswer, equalTo("Sir Lancelot of Camelot"));
+	}
+
+	@Test
+	public void shouldProvideFileProp() {
+		assertThat(averageAirspeedVelocityEuropean, equalTo("50"));
 	}
 }
