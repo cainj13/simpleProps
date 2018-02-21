@@ -31,6 +31,8 @@ public class SimplePropProviderTest {
 	String notRequiredProp;
 	@SimpleProp(key = "default-value_prop", defaultValue = "default")
 	String defaultValueProp;
+	@SimpleProp(key = "bool")
+	Boolean boolProp;
 
 	@Before
 	public void setUp() throws Exception {

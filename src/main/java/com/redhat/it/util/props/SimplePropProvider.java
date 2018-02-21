@@ -39,6 +39,19 @@ public class SimplePropProvider {
 		});
 	}
 
+	@Produces
+	@SimpleProp
+	public Integer getSimplePropInteger(final InjectionPoint injectionPoint) {
+		return getSimpleProp(injectionPoint, stringValue -> {
+			try {
+				return Integer.parseInt(stringValue);
+			} catch (Exception e) {
+				throw new SimplePropertyException("Unable to convert string value to Integer: " + stringValue, e);
+			}
+		});
+	}
+
+
 	private <T> T getSimpleProp(final InjectionPoint injectionPoint, Function<String, T> transformer) {
 		final Optional<Annotation> simplePropertyAnnotation = injectionPoint.getQualifiers().stream()
 				.filter(annotation -> annotation.annotationType().isAssignableFrom(SimpleProp.class))

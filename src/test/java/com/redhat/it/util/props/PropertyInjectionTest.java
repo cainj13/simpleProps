@@ -39,6 +39,10 @@ public class PropertyInjectionTest {
 	@SimpleProp(key = "boolean.prop")
 	Boolean booleanProp;
 
+	@Inject
+	@SimpleProp(key = "int.prop")
+	Integer integerProp;
+
 	@Test
 	public void shouldProvideSimpleProp() {
 		assertThat(operatingSystemName, equalTo(System.getProperty("os.name")));
@@ -67,5 +71,10 @@ public class PropertyInjectionTest {
 	@Test
 	public void shouldInjectBooleanProp() {
 		assertThat(booleanProp, equalTo(Boolean.TRUE));
+	}
+
+	@Test
+	public void shouldInjectIntegerProp() {
+		assertThat(integerProp, equalTo(100));
 	}
 }
