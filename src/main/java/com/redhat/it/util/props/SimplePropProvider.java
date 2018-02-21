@@ -13,12 +13,20 @@ public class SimplePropProvider {
 	@Inject
 	SimplePropSource propSource;
 
+	public SimplePropProvider() {
+	}
+
+	public SimplePropProvider(final SimplePropSource propSource) {
+		this.propSource = propSource;
+	}
+
 	@Produces
 	@SimpleProp
 	public String getSimpleProp(final InjectionPoint injectionPoint) {
 		final Optional<Annotation> simplePropertyAnnotation = injectionPoint.getQualifiers().stream()
 				.filter(annotation -> annotation.annotationType().isAssignableFrom(SimpleProp.class))
 				.findFirst();
+
 		if (!simplePropertyAnnotation.isPresent()) {
 			throw new SimplePropertyException("Attempted to inject simple property on entity not annotated with @SimpleProp");
 		}
@@ -29,6 +37,6 @@ public class SimplePropProvider {
 		}
 
 		final Optional<String> property = Optional.ofNullable(propSource.getProperties().getProperty(key.get()));
-		return property.orElseThrow(() -> new SimplePropertyException(String.format("Could not find required property %s.  Provide the property or use the Optional<> type.", key.get())));
+		return property.orElseThrow(() -> new SimplePropertyException(String.format("Could not find required property %s.", key.get())));
 	}
 }
