@@ -37,6 +37,15 @@ public class SimplePropProvider {
 		}
 
 		final Optional<String> property = Optional.ofNullable(propSource.getProperties().getProperty(key.get()));
-		return property.orElseThrow(() -> new SimplePropertyException(String.format("Could not find required property %s.", key.get())));
+
+		if (property.isPresent()) {
+			return property.get();
+		} else {
+			if (((SimpleProp) simplePropertyAnnotation.get()).required()) {
+				throw new SimplePropertyException(String.format("Could not find required property %s.  Either provide the property, or mark it as not required.", key.get()));
+			} else {
+				return null;
+			}
+		}
 	}
 }

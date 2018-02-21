@@ -4,14 +4,13 @@ import com.redhat.it.util.props.provider.SystemPropertySimplePropSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import javax.enterprise.inject.spi.InjectionPoint;
-import java.lang.annotation.Annotation;
 import java.util.Collections;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -21,8 +20,6 @@ public class SimplePropProviderTest {
 	SimplePropProvider simplePropProvider;
 	@Mock
 	InjectionPoint injectionPoint;
-	@Mock
-	SimpleProp simpleProp;
 
 	@SimpleProp(key = "os.name")
 	String mySimpleProp;
@@ -30,6 +27,8 @@ public class SimplePropProviderTest {
 	String propWhoseKeyIsAbsent;
 	@SimpleProp
 	String propWithNoKey;
+	@SimpleProp(key = "not-required", required = false)
+	String notRequiredProp;
 
 	@Before
 	public void setUp() throws Exception {
@@ -69,5 +68,14 @@ public class SimplePropProviderTest {
 
 		simplePropProvider.getSimpleProp(injectionPoint);
 		fail("Injection point with no property value did not result in exception");
+	}
+
+	@Test
+	public void shouldReturnNullWhenNotRequiredPropertyNotFound() throws Exception {
+		final SimpleProp simpleProp = getClass().getDeclaredField("notRequiredProp").getAnnotation(SimpleProp.class);
+		when(injectionPoint.getQualifiers()).thenReturn(Collections.singleton(simpleProp));
+
+		final String simplePropValue = simplePropProvider.getSimpleProp(injectionPoint);
+		assertThat(simplePropValue, nullValue());
 	}
 }

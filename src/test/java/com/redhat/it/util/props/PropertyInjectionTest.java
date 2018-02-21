@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.nullValue;
 
 @RunWith(CdiRunner.class)
 @AdditionalClasses({SimplePropProvider.class, TestPropertySource.class})
@@ -26,6 +27,10 @@ public class PropertyInjectionTest {
 	@SimpleProp(key = "average.airspeed.velocity.swallow.european")
 	String averageAirspeedVelocityEuropean;
 
+	@Inject
+	@SimpleProp(key = "does-not-exist", required = false)
+	String propertyValueDoesNotExist;
+
 	@Test
 	public void shouldProvideSimpleProp() {
 		assertThat(operatingSystemName, equalTo(System.getProperty("os.name")));
@@ -39,5 +44,10 @@ public class PropertyInjectionTest {
 	@Test
 	public void shouldProvideFileProp() {
 		assertThat(averageAirspeedVelocityEuropean, equalTo("50"));
+	}
+
+	@Test
+	public void shouldProvideNullValueWhenDoesNotExistAndNotRequired() {
+		assertThat(propertyValueDoesNotExist, nullValue());
 	}
 }
