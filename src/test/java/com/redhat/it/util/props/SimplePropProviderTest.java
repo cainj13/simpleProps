@@ -18,8 +18,17 @@ public class SimplePropProviderTest {
 	@SimpleProp(key = "os.name")
 	String operatingSystemName;
 
+	@Inject
+	@SimpleProp(key = "troll.question.name")
+	String trollNameAnswer;
+
 	@Test
 	public void shouldProvideSimpleProp() {
 		assertThat(operatingSystemName, equalTo(System.getProperty("os.name")));
+	}
+
+	@Test
+	public void shouldProvideClasspathProp() {
+		assertThat(trollNameAnswer, equalTo("Sir Lancelot of Camelot"));
 	}
 }

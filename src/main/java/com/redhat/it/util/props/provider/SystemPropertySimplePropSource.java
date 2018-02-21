@@ -8,6 +8,6 @@ public class SystemPropertySimplePropSource implements SimplePropSource {
 
 	@Override
 	public Properties getProperties() {
-		return System.getProperties();
+		return new Properties(System.getProperties());
 	}
 }

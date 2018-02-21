@@ -6,12 +6,9 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
-import java.util.Properties;
 
 @ApplicationScoped
 public class SimplePropProvider {
-
-	private final Properties properties = new Properties();
 
 	@Inject
 	SimplePropSource propSource;
@@ -26,7 +23,7 @@ public class SimplePropProvider {
 			throw new SimplePropertyException("Attempted to inject simple property on entity not annotated with @SimpleProp");
 		}
 
-		final Optional<String> key = Optional.ofNullable(((SimpleProp)simplePropertyAnnotation.get()).key());
+		final Optional<String> key = Optional.ofNullable(((SimpleProp) simplePropertyAnnotation.get()).key());
 		if (!key.isPresent()) {
 			throw new SimplePropertyException("@SimpleProp defined without a key.  Please make sure all annotated fields and parameters have a key=\"keyname\" definition.");
 		}
