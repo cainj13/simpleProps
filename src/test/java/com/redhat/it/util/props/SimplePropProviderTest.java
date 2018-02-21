@@ -29,6 +29,8 @@ public class SimplePropProviderTest {
 	String propWithNoKey;
 	@SimpleProp(key = "not-required", required = false)
 	String notRequiredProp;
+	@SimpleProp(key = "default-value_prop", defaultValue = "default")
+	String defaultValueProp;
 
 	@Before
 	public void setUp() throws Exception {
@@ -77,5 +79,14 @@ public class SimplePropProviderTest {
 
 		final String simplePropValue = simplePropProvider.getSimpleProp(injectionPoint);
 		assertThat(simplePropValue, nullValue());
+	}
+
+	@Test
+	public void shouldReturnDefaultValueWhenPropertyNotFound() throws Exception {
+		final SimpleProp simpleProp = getClass().getDeclaredField("defaultValueProp").getAnnotation(SimpleProp.class);
+		when(injectionPoint.getQualifiers()).thenReturn(Collections.singleton(simpleProp));
+
+		final String simplePropValue = simplePropProvider.getSimpleProp(injectionPoint);
+		assertThat(simplePropValue, equalTo("default"));
 	}
 }

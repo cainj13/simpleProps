@@ -31,6 +31,10 @@ public class PropertyInjectionTest {
 	@SimpleProp(key = "does-not-exist", required = false)
 	String propertyValueDoesNotExist;
 
+	@Inject
+	@SimpleProp(key = "use-defualt", defaultValue = "default")
+	String useDefaultValue;
+
 	@Test
 	public void shouldProvideSimpleProp() {
 		assertThat(operatingSystemName, equalTo(System.getProperty("os.name")));
@@ -49,5 +53,10 @@ public class PropertyInjectionTest {
 	@Test
 	public void shouldProvideNullValueWhenDoesNotExistAndNotRequired() {
 		assertThat(propertyValueDoesNotExist, nullValue());
+	}
+
+	@Test
+	public void shouldUseDefaultValueWhenPropertyValueNotFoundInSources() {
+		assertThat(useDefaultValue, equalTo("default"));
 	}
 }

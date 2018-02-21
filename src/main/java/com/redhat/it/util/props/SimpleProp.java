@@ -17,4 +17,5 @@ public @interface SimpleProp {
 
 	@Nonbinding String key() default "";
 	@Nonbinding boolean required() default true;
+	@Nonbinding String defaultValue() default "";
 }

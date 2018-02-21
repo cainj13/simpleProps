@@ -31,7 +31,8 @@ public class SimplePropProvider {
 			throw new SimplePropertyException("Attempted to inject simple property on entity not annotated with @SimpleProp");
 		}
 
-		final Optional<String> key = Optional.ofNullable(((SimpleProp) simplePropertyAnnotation.get()).key());
+		final SimpleProp simpleProp = (SimpleProp) simplePropertyAnnotation.get();
+		final Optional<String> key = Optional.ofNullable(simpleProp.key());
 		if (!key.isPresent()) {
 			throw new SimplePropertyException("@SimpleProp defined without a key.  Please make sure all annotated fields and parameters have a key=\"keyname\" definition.");
 		}
@@ -40,8 +41,10 @@ public class SimplePropProvider {
 
 		if (property.isPresent()) {
 			return property.get();
-		} else {
-			if (((SimpleProp) simplePropertyAnnotation.get()).required()) {
+		} else { // No property found in sources, check default + required status and respond appropriately
+			if (!simpleProp.defaultValue().isEmpty()) {
+				return simpleProp.defaultValue();
+			} else if (simpleProp.required()) {
 				throw new SimplePropertyException(String.format("Could not find required property %s.  Either provide the property, or mark it as not required.", key.get()));
 			} else {
 				return null;
