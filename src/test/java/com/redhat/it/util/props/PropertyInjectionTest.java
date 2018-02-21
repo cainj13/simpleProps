@@ -35,6 +35,10 @@ public class PropertyInjectionTest {
 	@SimpleProp(key = "use-defualt", defaultValue = "default")
 	String useDefaultValue;
 
+	@Inject
+	@SimpleProp(key = "boolean.prop")
+	Boolean booleanProp;
+
 	@Test
 	public void shouldProvideSimpleProp() {
 		assertThat(operatingSystemName, equalTo(System.getProperty("os.name")));
@@ -58,5 +62,10 @@ public class PropertyInjectionTest {
 	@Test
 	public void shouldUseDefaultValueWhenPropertyValueNotFoundInSources() {
 		assertThat(useDefaultValue, equalTo("default"));
+	}
+
+	@Test
+	public void shouldInjectBooleanProp() {
+		assertThat(booleanProp, equalTo(Boolean.TRUE));
 	}
 }

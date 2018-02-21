@@ -6,6 +6,7 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.util.Optional;
+import java.util.function.Function;
 
 @ApplicationScoped
 public class SimplePropProvider {
@@ -23,6 +24,22 @@ public class SimplePropProvider {
 	@Produces
 	@SimpleProp
 	public String getSimpleProp(final InjectionPoint injectionPoint) {
+		return getSimpleProp(injectionPoint, String::toString);
+	}
+
+	@Produces
+	@SimpleProp
+	public Boolean getSimplePropBoolean(final InjectionPoint injectionPoint) {
+		return getSimpleProp(injectionPoint, stringValue -> {
+			try {
+				return Boolean.parseBoolean(stringValue);
+			} catch (Exception e) {
+				throw new SimplePropertyException("Unable to convert string value to boolean: " + stringValue, e);
+			}
+		});
+	}
+
+	private <T> T getSimpleProp(final InjectionPoint injectionPoint, Function<String, T> transformer) {
 		final Optional<Annotation> simplePropertyAnnotation = injectionPoint.getQualifiers().stream()
 				.filter(annotation -> annotation.annotationType().isAssignableFrom(SimpleProp.class))
 				.findFirst();
@@ -40,10 +57,10 @@ public class SimplePropProvider {
 		final Optional<String> property = Optional.ofNullable(propSource.getProperties().getProperty(key.get()));
 
 		if (property.isPresent()) {
-			return property.get();
+			return transformer.apply(property.get());
 		} else { // No property found in sources, check default + required status and respond appropriately
 			if (!simpleProp.defaultValue().isEmpty()) {
-				return simpleProp.defaultValue();
+				return transformer.apply(simpleProp.defaultValue());
 			} else if (simpleProp.required()) {
 				throw new SimplePropertyException(String.format("Could not find required property %s.  Either provide the property, or mark it as not required.", key.get()));
 			} else {
